@@ -11,7 +11,7 @@ export class ContactService {
 
   async create(data: CreateContactDto) {
     return this.prisma.contact.create({
-      data,
+      data: { ...data, createdAt: new Date(), updatedAt: new Date() },
     });
   }
 

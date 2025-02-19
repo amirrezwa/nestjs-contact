@@ -37,6 +37,4 @@ export class CreateContactDto {
   })
   userId: number;
 
-  createdAt: Date;
-  updatedAt: Date;
 }
