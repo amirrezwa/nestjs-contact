@@ -1,0 +1,12 @@
+html {
+    background-color: #121212;
+color: red;
+}
+
+.swagger-ui .topbar {
+    background-color: #1e1e1e;
+}
+
+.swagger-ui .info h1 {
+    color: #00bcd4;
+}
