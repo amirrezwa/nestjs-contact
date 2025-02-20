@@ -1,13 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Contact } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
   contact: any;
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: CreateContactDto) {
     return this.prisma.contact.create({
@@ -23,7 +23,7 @@ export class ContactService {
     const contact = await this.prisma.contact.findFirst({ where: { id } });
 
     if (!contact) {
-      throw new HttpException(`user NOT found, id ${id}`, 401);
+      throw new HttpException(`Contact NOT found, id ${id}`, 404);
     }
     return contact;
   }
@@ -35,12 +35,8 @@ export class ContactService {
     });
   }
 
-  async remove(id: number) {
-    try {
-      await this.prisma.contact.delete({ where: { id } });
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+  async remove(id: number): Promise<Contact> {  // تغییر `void` به `Contact`
+    return this.prisma.contact.delete({ where: { id } });
   }
+  
 }

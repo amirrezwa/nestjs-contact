@@ -17,7 +17,7 @@ export class CreateContactDto {
     example: 'email@gmail.com',
     description: 'Unique identifier for the invoice',
   })
-  email?: string;
+  email: string | null;
 
   @ApiProperty({
     example: '09123456789',
@@ -29,12 +29,11 @@ export class CreateContactDto {
     example: 'address',
     description: 'Unique identifier for the invoice',
   })
-  address?: string;
+  address: string | null;
 
   @ApiProperty({
     example: 'userId',
     description: 'Unique identifier for the invoice',
   })
   userId: number;
-
 }
