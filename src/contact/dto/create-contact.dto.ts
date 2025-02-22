@@ -36,4 +36,7 @@ export class CreateContactDto {
     description: 'Unique identifier for the invoice',
   })
   userId: number;
+
+  @ApiProperty({ example: 'uploads/profile.jpg', description: 'Profile image of the contact', required: false })
+  fileUrl?: string;  // این فیلد رو اضافه کردیم
 }
