@@ -9,6 +9,6 @@ export class LoginDto {
   password: string;
 
 
-@ApiProperty({ example: 'ADMIN | USER | MANAGAR', description: 'The password' })
+@ApiProperty({ example: 'ADMIN', description: 'The password' })
   role: Role;
 }

@@ -9,6 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  NotFoundException,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -21,6 +23,10 @@ import { ApiBearerAuth, ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nes
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { Response } from 'express';
+import * as path from 'path';
+import * as fs from 'fs';
+
 
 @Controller('contact')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,7 +39,12 @@ export class ContactController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads',
+        destination: (req, file, callback) => {
+          const userId = req.body.userId; // گرفتن id کاربر
+          const uploadPath = `./uploads/${userId}`;
+          fs.mkdirSync(uploadPath, { recursive: true }); // ایجاد پوشه اگر وجود ندارد
+          callback(null, uploadPath);
+        },
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           callback(null, file.fieldname + '-' + uniqueSuffix + extname(file.originalname));
@@ -41,7 +52,8 @@ export class ContactController {
       }),
     }),
   )
-  
+
+
   @Roles(Role.USER)
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create a new contact with an optional file' })
@@ -77,9 +89,36 @@ export class ContactController {
   @Get(':id')
   @Roles(Role.USER, Role.ADMIN)
   @ApiOperation({ summary: 'Get a contact by id' })
-  findOne(@Param('id') id: string) {
-    return this.contactService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const contact = await this.contactService.findOne(+id);
+
+    if (contact && contact.fileUrl) {
+      contact.fileUrl = `http://localhost:3000${contact.fileUrl}`;
+    }
+    return contact;
   }
+
+  @Get(':id/photo')
+  async getPhoto(@Param('id') id: string, @Res() res: Response) {
+    const contact = await this.contactService.findOne(+id);
+
+    // بررسی وجود کانتکت و عکس
+    if (!contact || !contact.fileUrl) {
+      throw new NotFoundException('Photo not found');
+    }
+
+    const fileName = path.basename(contact.fileUrl); // استخراج نام فایل
+    const filePath = path.resolve('uploads', fileName); // مسیر کامل فایل
+  
+    // بررسی وجود فایل
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundException('File does not exist');
+    }
+
+    return res.sendFile(filePath);
+  }
+
+
 
   @Patch(':id')
   @Roles(Role.ADMIN)

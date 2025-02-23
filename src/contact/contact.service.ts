@@ -11,7 +11,12 @@ export class ContactService {
 
   async create(data: CreateContactDto) {
     return this.prisma.contact.create({
-      data: { ...data, createdAt: new Date(), updatedAt: new Date() },
+      data: {
+        ...data,
+        fileUrl: data.fileUrl, // اینجا دقت کن که مسیر درست باشه
+        userId: Number(data.userId),
+        createdAt: new Date(), updatedAt: new Date()
+      },
     });
   }
 
@@ -25,6 +30,7 @@ export class ContactService {
     if (!contact) {
       throw new HttpException(`Contact NOT found, id ${id}`, 404);
     }
+    console.log(contact); 
     return contact;
   }
 
@@ -38,5 +44,5 @@ export class ContactService {
   async remove(id: number): Promise<Contact> {  // تغییر `void` به `Contact`
     return this.prisma.contact.delete({ where: { id } });
   }
-  
+
 }
