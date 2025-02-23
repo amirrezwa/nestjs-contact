@@ -25,7 +25,7 @@ describe('ContactService', () => {
       phone: '09123456789',
       address: null, // یا مقدار تستی مثل 'Test Address'
       userId: 1,
-      createdAt: new Date(),
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه      createdAt: new Date(),
       updatedAt: new Date(),
     } as Contact);
 
@@ -48,11 +48,18 @@ describe('ContactService', () => {
       phone: '09123456789',
       address: '123 Main St',
       userId: 1,
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
     };
 
     jest.spyOn(prisma.contact, 'create').mockResolvedValue({
       id: 1,
-      ...contactData,
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phone: '09123456789',
+      address: 'Some address',
+      userId: 1,
+      fileUrl: 'uploads/file.jpg',  // به جای undefined از string استفاده کنید
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -77,6 +84,7 @@ describe('ContactService', () => {
         updatedAt: new Date(),
         email: null,
         address: null,
+        fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
       },
     ];
 
@@ -97,6 +105,7 @@ describe('ContactService', () => {
       phone: '09123456789',
       address: null, // مقدار اضافه شد
       userId: 1,
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -109,6 +118,7 @@ describe('ContactService', () => {
       phone: '09123456789',
       address: null,
       userId: 1,
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -147,6 +157,7 @@ describe('ContactService', () => {
       phone: '09123456789',
       address: null, // مقدار اضافه شد
       userId: 1,
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -159,6 +170,7 @@ describe('ContactService', () => {
       email: null,
       phone: '09123456789',
       address: null,
+      fileUrl: '/uploads/file-1234567890.jpg',  // حتما باید string باشه
       userId: 1
     });
 
